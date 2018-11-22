@@ -975,6 +975,18 @@ public class CSharpPrinter extends CSVisitor {
         writeXmlDoc(xmlEscape(node.text()));
     }
 
+    public void visit(CSYieldBreakStatement node) {
+        printPrecedingComments(node);
+        writeIndentedLine("yield break;");
+    }
+
+    @Override
+    public void visit(CSYieldReturnStatement node) {
+        printPrecedingComments(node);
+        write("yield return ");
+        node.expression().accept(this);
+    }
+
     private void writeXmlDoc(final String xmldocText) {
         String[] lines = xmldocText.split("\n");
         for (int i = 0; i < lines.length; ++i) {

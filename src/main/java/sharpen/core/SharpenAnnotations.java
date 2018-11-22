@@ -86,7 +86,9 @@ public class SharpenAnnotations {
 
     static final String SHARPEN_STATIC_HELPERS = "@sharpen.static.helpers";
 
+    static final String SHARPEN_YIELD = "@sharpen.yield";
+
     public static boolean hasIgnoreAnnotation(BodyDeclaration node) {
-        return JavadocUtility.containsJavadoc(node, SHARPEN_IGNORE);
+        return node != null && JavadocUtility.containsJavadoc(node, SHARPEN_IGNORE);
     }
 }

@@ -1031,7 +1031,12 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private void mapThrownException(Name exception, CSMember member) {
-        final String typeName = mappedTypeName(exception.resolveTypeBinding());
+        ITypeBinding type = exception.resolveTypeBinding();
+        if (SharpenAnnotations.hasIgnoreAnnotation(findDeclaringNode(type))) {
+            return;
+        }
+
+        final String typeName = mappedTypeName(type);
         if (containsExceptionTagWithCRef(member, typeName))
             return;
 
@@ -1977,10 +1982,40 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     private CSTypeReferenceExpression mappedReturnType(MethodDeclaration node) {
+        if (hasYieldMarker(node)) {
+            compilationUnit().addUsing(new CSUsing("System.Collections"));
+            return new CSTypeReference("IEnumerator");
+
+        }
         IMethodBinding overriden = getOverridedMethod(node);
         if (overriden != null)
             return mappedTypeReference(overriden.getReturnType());
         return mappedTypeReference(node.getReturnType2(), false);
+    }
+
+    private boolean hasYieldMarker(ASTNode node) {
+        while (node != null && !(node instanceof MethodDeclaration)) {
+            node = node.getParent();
+        }
+        if (node != null) {
+            for (Object type : ((MethodDeclaration)node).thrownExceptionTypes()) {
+                BodyDeclaration declaration = findDeclaringNode(((SimpleType) type).resolveBinding());
+                if (declaration != null && containsJavadoc(declaration, SharpenAnnotations.SHARPEN_YIELD)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isInvocationWithYieldMarker(MethodInvocation node) {
+        final BodyDeclaration method = declaringNode(node.resolveMethodBinding());
+        return hasYieldMarker(method);
+    }
+
+    private void processInvocationWithYieldMarker(MethodInvocation node) {
+        processOrdinaryMethodInvocation(node);
+        pushExpression(new CSYieldReturnStatement(popExpression()));
     }
 
     private void processEventDeclaration(MethodDeclaration node) {
@@ -2480,7 +2515,11 @@ public class CSharpBuilder extends ASTVisitor {
     }
 
     public boolean visit(ReturnStatement node) {
-        addStatement(new CSReturnStatement(node.getStartPosition(), mapExpression(node.getExpression())));
+        if (node.getExpression() == null && hasYieldMarker(node)) {
+            addStatement(new CSYieldBreakStatement(node.getStartPosition()));
+        } else {
+            addStatement(new CSReturnStatement(node.getStartPosition(), mapExpression(node.getExpression())));
+        }
         return false;
     }
 
@@ -2778,6 +2817,7 @@ public class CSharpBuilder extends ASTVisitor {
         return stmt instanceof CSThrowStatement
                 || stmt instanceof CSReturnStatement
                 || stmt instanceof CSBreakStatement
+                || stmt instanceof CSYieldBreakStatement
                 || stmt instanceof CSGotoStatement
                 || stmt instanceof CSContinueStatement;
     }
@@ -3252,6 +3292,11 @@ public class CSharpBuilder extends ASTVisitor {
 
         if (isMacro(node)) {
             processMacroInvocation(node);
+            return;
+        }
+
+        if (isInvocationWithYieldMarker(node)) {
+            processInvocationWithYieldMarker(node);
             return;
         }
 

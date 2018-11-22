@@ -251,4 +251,11 @@ public class CSVisitor {
 
     public void visit(CSLambdaExpression lambda) {
     }
+
+    public void visit(CSYieldBreakStatement node) {
+    }
+
+    public void visit(CSYieldReturnStatement node) {
+    }
+
 }
