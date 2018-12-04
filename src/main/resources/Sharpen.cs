@@ -204,7 +204,7 @@ namespace Sharpen {
         public static void PutAll<CK, CV, IK, IV>(IDictionary<CK, CV> collection, IDictionary<IK, IV> items)
             where IK : CK where IV : CV {
             foreach (var e in items) {
-                collection.Add(e.Key, e.Value);
+                collection[e.Key] = e.Value;
             }
         }
 
