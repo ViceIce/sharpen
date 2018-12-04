@@ -69,6 +69,7 @@ public class DefaultConfiguration extends Configuration {
         mapMethod("java.lang.Math.max", "System.Math.Max");
         mapMethod("java.lang.Math.abs", "System.Math.Abs");
         mapMethod("java.lang.Math.floor", "System.Math.Floor");
+        mapMethod("java.lang.Math.ceil", "System.Math.Ceiling");
         mapMethod("java.lang.Math.atan2", "System.Math.Atan2");
         mapMethod("java.lang.Math.log10", "System.Math.Log10");
         mapMethod("java.lang.Math.pow", "System.Math.Pow");
