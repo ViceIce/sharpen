@@ -5,5 +5,5 @@ interface Foo {
 abstract class FooImpl implements Foo {
 }
 
-abstract class FooImpl2 extends FooImpl {
+abstract class FooImpl2 extends FooImpl implements Foo {
 }

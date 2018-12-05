@@ -8,6 +8,6 @@ internal abstract class FooImpl : Foo
 	public abstract bool foo(int arg1, int arg2);
 }
 
-internal abstract class FooImpl2 : FooImpl
+internal abstract class FooImpl2 : FooImpl, Foo
 {
 }

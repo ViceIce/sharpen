@@ -74,7 +74,16 @@ public class BindingUtils {
         }
         ITypeBinding superClass = type.getSuperclass();
         if (null != superClass) {
-            return findOverriddenMethodInTypeOrSuperclasses(superClass, method);
+            found = findOverriddenMethodInTypeOrSuperclasses(superClass, method);
+            if (null != found) {
+                return found;
+            }
+            for (ITypeBinding anInterface : superClass.getInterfaces()) {
+                found = findOverriddenMethodInTypeOrSuperclasses(anInterface, method);
+                if (null != found) {
+                    return found;
+                }
+            }
         }
         return null;
     }
