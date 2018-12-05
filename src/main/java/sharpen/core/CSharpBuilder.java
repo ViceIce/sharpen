@@ -2018,6 +2018,11 @@ public class CSharpBuilder extends ASTVisitor {
         pushExpression(new CSYieldReturnStatement(popExpression()));
     }
 
+    private boolean isInvocationWithYieldMarker(SuperMethodInvocation node) {
+        final BodyDeclaration method = declaringNode(node.resolveMethodBinding());
+        return hasYieldMarker(method);
+    }
+
     private void processEventDeclaration(MethodDeclaration node) {
         CSTypeReference eventHandlerType = new CSTypeReference(getEventHandlerTypeName(node));
         CSEvent event = createEventFromMethod(node, eventHandlerType);
@@ -3230,6 +3235,12 @@ public class CSharpBuilder extends ASTVisitor {
 
         CSMethodInvocationExpression mie = new CSMethodInvocationExpression(target);
         mapArguments(mie, node.arguments());
+
+        if (isInvocationWithYieldMarker(node)) {
+            pushExpression(new CSYieldReturnStatement(mie));
+            return false;
+        }
+
         pushExpression(mie);
         return false;
     }

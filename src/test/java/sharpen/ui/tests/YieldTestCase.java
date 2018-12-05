@@ -30,6 +30,11 @@ public class YieldTestCase extends AbstractConversionTestCase {
         runResourceTestCase("yield/Throws");
     }
 
+    @Test
+    public void throwsSuper() throws Throwable {
+        runResourceTestCase("yield/ThrowsSuper");
+    }
+
     @Override
     protected Configuration getConfiguration() {
         return enableNativeTypeSystem(newConfigurationEgyptian());
