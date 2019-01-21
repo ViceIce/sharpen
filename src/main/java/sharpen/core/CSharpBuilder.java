@@ -2660,7 +2660,10 @@ public class CSharpBuilder extends ASTVisitor {
      */
     private CSArrayCreationExpression unfoldMultiArrayCreation(ArrayCreation node) {
         ArrayType type = node.getType();
-        if (type.getElementType().resolveBinding().isRawType() && node.getParent() instanceof CastExpression) {
+        if (node.getParent() instanceof CastExpression &&
+                ((CastExpression) node.getParent()).getType() instanceof ArrayType &&
+                (type.getElementType().resolveBinding().isRawType() || ((ArrayType) (((CastExpression) node.getParent()).getType())).getElementType().resolveBinding().isTypeVariable())
+        ) {
             // convert explicit casts for raw array creation to generic array creation
             type = (ArrayType) ((CastExpression) node.getParent()).getType();
         }
@@ -2698,7 +2701,10 @@ public class CSharpBuilder extends ASTVisitor {
     private CSArrayCreationExpression mapSingleArrayCreation(ArrayCreation node) {
         ArrayType type = node.getType();
 
-        if (type.getElementType().resolveBinding().isRawType() && node.getParent() instanceof CastExpression) {
+        if (node.getParent() instanceof CastExpression &&
+                ((CastExpression) node.getParent()).getType() instanceof ArrayType &&
+                (type.getElementType().resolveBinding().isRawType() || ((ArrayType) (((CastExpression) node.getParent()).getType())).getElementType().resolveBinding().isTypeVariable())
+        ) {
             // convert explicit casts for raw array creation to generic array creation
             type = (ArrayType) ((CastExpression) node.getParent()).getType();
         }

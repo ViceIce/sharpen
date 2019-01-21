@@ -11,5 +11,11 @@ namespace generics {
         private IList<T[]>[] genArrayList = (IList<T[]>[])new IList<T[]>[0];
 
         private IList<T[][]>[] genArrayList2 = (IList<T[][]>[])new IList<T[][]>[0];
+
+        private T[] genericArray1 = (T[])new T[0];
+
+        private T[][] genericArray2 = (T[][])new T[][] {  };
+
+        private T[][][] genericArray3 = (T[][][])new T[][][] {  };
     }
 }

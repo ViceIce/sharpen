@@ -11,4 +11,7 @@ public class GenericArrays<T> {
     private Map<T, T>[] genMapArray2 = (Map<T, T>[]) new HashMap[0];
     private List<T[]>[] genArrayList = (List<T[]>[]) new ArrayList[0];
     private List<T[][]>[] genArrayList2 = (List<T[][]>[]) new ArrayList[0];
+    private T[] genericArray1 = (T[]) new Object[0];
+    private T[][] genericArray2 = (T[][]) new Object[0][0];
+    private T[][][] genericArray3 = (T[][][]) new Object[0][0][0];
 }
